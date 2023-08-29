@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+
+	<context:component-scan
+		base-package="com.jdc.demo.repo,com.jdc.demo.service">
+	</context:component-scan>
+	<bean id="methodAccessAspects"
+		class="com.jdc.demo.aspects.MethodAccessAspects">
+	</bean>
+	<aop:config>
+		<aop:pointcut expression="execution(public * com.jdc.demo.service.*.*(..)) and args(names)" id="pointCutMethod"/>
+		<aop:aspect id="methodAccess" ref="methodAccessAspects">
+
+		<aop:before method="beforeExecution" pointcut-ref="pointCutMethod" arg-names="names" />
+			
+		<aop:after method="afterFinally" pointcut-ref="pointCutMethod" arg-names="names"/>
+		<aop:after-returning method="afterReturning"
+			pointcut="execution(* getStudent())" returning="student" />
+		</aop:aspect>
+	</aop:config>
+</beans>
